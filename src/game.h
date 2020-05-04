@@ -5,7 +5,7 @@
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
-#include "snake.h"
+#include "tetromino.h"
 
 class Game {
  public:
@@ -16,8 +16,7 @@ class Game {
   int GetSize() const;
 
  private:
-  Snake snake;
-  SDL_Point food;
+  Tetromino tetromino;
 
   std::random_device dev;
   std::mt19937 engine;
@@ -26,7 +25,7 @@ class Game {
 
   int score{0};
 
-  void PlaceFood();
+  void PlaceTetromino();
   void Update();
 };
 
