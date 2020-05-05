@@ -3,9 +3,32 @@
 #include <algorithm>
 #include <iostream>
 
+Line::Line(Block* block)
+    : index(block->location.y),
+      blocks{std::move(block)}{}
+
+Line::~Line(){
+    // delete all blocks
+    for (auto it = std::begin(blocks); it != std::end(blocks); ++it){ delete *it; }
+}
+
+void Line::Add(Block* block) {
+    if (block->location.y == index) {
+        blocks.emplace_back(block);
+    }
+}
+
+void Line::Down() {
+    index += 1;
+    for (auto b : blocks) {
+        b->location.y += 1;
+    }
+}
+
 Tetromino::Tetromino(int grid_width, int grid_height)
     : grid_width(grid_width),
       grid_height(grid_height){
+        GenerateBlocks();
     };
 
 void Tetromino::AddCandidates() {
@@ -97,8 +120,8 @@ bool Tetromino::MovableToLeft() {
             return false;
         }
 
-        for (std::pair<int, std::vector<Block*>> line : stack) {
-            for (auto s : line.second) {
+        for (auto const &l : stack) {
+            for (auto const &s : l->blocks) {
                 if (((b->location.x - 1) == s->location.x) && (b->location.y == s->location.y)) {
                     return false;
                 }
@@ -115,9 +138,9 @@ bool Tetromino::MovableToRight() {
             return false;
         }
 
-         for (std::pair<int, std::vector<Block*>> line : stack) {
-            for (auto s : line.second) {
-                if (((b->location.x + 1) == s->location.x) && (b->location.y == s->location.y)) {
+        for (auto const &l : stack) {
+            for (auto const &s : l->blocks) {
+                if (((b->location.x + 1) == s->location.x) && (b->location.y == s->location.y))  {
                     return false;
                 }
             }
@@ -133,9 +156,9 @@ bool Tetromino::MovableToDown() {
             return false;
         }
 
-        for (std::pair<int, std::vector<Block*>> line : stack) {
-            for (auto s : line.second) {
-                if (((b->location.y + 1) == s->location.y) && (b->location.x == s->location.x)) {
+        for (auto const &l : stack) {
+            for (auto const &s : l->blocks) {
+                if (((b->location.y + 1) == s->location.y) && (b->location.x == s->location.x))  {
                     return false;
                 }
             }
@@ -148,15 +171,42 @@ bool Tetromino::MovableToDown() {
 void Tetromino::MoveToStack() {
     // TODO
     for (Block* b : blocks) {
-        stack[b->location.y].emplace_back(std::move(b));
+        bool isNew {true};
+        for (auto const &l : stack) {
+            if (b->location.y == l->index) {
+                isNew = false;
+                l->Add(b);
+                break;
+            }
+        }
+        if (isNew) {
+            stack.emplace_back(new Line(b));
+        }
     }
 
-    for (std::pair<int, std::vector<Block*>> line : stack) {
-        if (line.second.size() == grid_width) {
+    for (auto it = stack.begin(); it != stack.end();) {
+        if ((*it)->blocks.size() == grid_width) {
             std::cout<<"yay"<<std::endl;
+            DeleteLine((*it)->index);
+        } else {
+            it++;
         }
+
     }
 
     GenerateBlocks();
 }
 
+void Tetromino::DeleteLine(int index) {
+    for (auto it = stack.begin(); it != stack.end();) {
+        if ((*it)->index == index) {
+            delete *it;
+            stack.erase(it);
+        } else if ((*it)->index < index) {\
+            (*it)->Down();
+            it++;
+        } else {
+            it++;
+        }
+    }
+}

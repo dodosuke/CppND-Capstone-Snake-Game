@@ -2,10 +2,17 @@
 #define TETROMINO_H
 
 #include <vector>
-#include <map>
 #include <memory>
 #include "SDL.h"
-#include "block.h"
+
+struct Block {
+    SDL_Point location;
+    int color [4];
+
+    Block(SDL_Point loc, int r, int g, int b, int a)
+    : location {loc},
+      color{r, g, b, a}{};
+};
 
 // Ref: https://www.techiedelight.com/check-vector-contains-given-element-cpp/
 struct compare {
@@ -15,6 +22,18 @@ struct compare {
   bool operator()(Block* const &b){
     return ((b->location.x == loc.x) && (b->location.y == loc.y));
   }
+};
+
+class Line {
+  public:
+    int index;
+    std::vector<Block*> blocks;
+
+    Line(Block* block);
+    ~Line();
+
+    void Add(Block* block);
+    void Down();
 };
 
 class Tetromino {
@@ -27,7 +46,7 @@ class Tetromino {
   int b {rand() % 256};
   int a {255};
   std::vector<Block*> blocks {};
-  std::map<int, std::vector<Block*>> stack {};
+  std::vector<Line*> stack {};
 
   void GenerateBlocks();
   void Move(Direction direction);
@@ -41,6 +60,7 @@ class Tetromino {
 
   void AddCandidates();
   void MoveToStack();
+  void DeleteLine(int index);
 
   bool MovableToLeft();
   bool MovableToRight();

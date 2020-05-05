@@ -57,8 +57,8 @@ void Renderer::Render(Tetromino const &tetromino) {
   }
 
   // Render Stack
-  for (std::pair<int, std::vector<Block*>> line : tetromino.stack) {
-    for (auto s : line.second) {
+  for (auto const &line : tetromino.stack) {
+    for (auto const &s : line->blocks) {
       SDL_SetRenderDrawColor(sdl_renderer, s->color[0], s->color[1], s->color[2], s->color[3]);
       block.x = s->location.x * block.w;
       block.y = s->location.y * block.h;
