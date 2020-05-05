@@ -50,17 +50,17 @@ void Renderer::Render(Tetromino const &tetromino) {
 
   // Render a falling block
   SDL_SetRenderDrawColor(sdl_renderer, tetromino.r, tetromino.g, tetromino.b, tetromino.a);
-  for (Block const &b : tetromino.blocks) {
-    block.x = b.location.x * block.w;
-    block.y = b.location.y * block.h;
+  for (Block* const &b : tetromino.blocks) {
+    block.x = b->location.x * block.w;
+    block.y = b->location.y * block.h;
     SDL_RenderFillRect(sdl_renderer, &block);
   }
 
   // Render Stack
-  for (Block const &b : tetromino.stack) {
-    SDL_SetRenderDrawColor(sdl_renderer, b.color[0], b.color[1], b.color[2], b.color[3]);
-    block.x = b.location.x * block.w;
-    block.y = b.location.y * block.h;
+  for (Block* const &s : tetromino.stack) {
+    SDL_SetRenderDrawColor(sdl_renderer, s->color[0], s->color[1], s->color[2], s->color[3]);
+    block.x = s->location.x * block.w;
+    block.y = s->location.y * block.h;
     SDL_RenderFillRect(sdl_renderer, &block);
   }
   // Update Screen

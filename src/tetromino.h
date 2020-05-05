@@ -11,8 +11,8 @@ struct compare {
   SDL_Point loc;
   compare(SDL_Point const &l): loc{l} { }
 
-  bool operator()(Block const &b){
-    return ((b.location.x == loc.x) && (b.location.y == loc.y));
+  bool operator()(Block* const &b){
+    return ((b->location.x == loc.x) && (b->location.y == loc.y));
   }
 };
 
@@ -25,8 +25,8 @@ class Tetromino {
   int g {rand() % 256};
   int b {rand() % 256};
   int a {255};
-  std::vector<Block> blocks {};
-  std::vector<Block> stack {};
+  std::vector<Block*> blocks {};
+  std::vector<Block*> stack {};
 
   void GenerateBlocks();
   void Move(Direction direction);
@@ -36,7 +36,7 @@ class Tetromino {
   int grid_width;
   int grid_height;
 
-  std::vector<SDL_Point> candidates {};
+  std::vector<SDL_Point > candidates {};
 
   void AddCandidates();
   void MoveToStack();

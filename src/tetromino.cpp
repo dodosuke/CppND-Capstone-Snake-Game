@@ -9,8 +9,8 @@ Tetromino::Tetromino(int grid_width, int grid_height)
     };
 
 void Tetromino::AddCandidates() {
-    int x = blocks.back().location.x;
-    int y = blocks.back().location.y;
+    int x = (blocks.back())->location.x;
+    int y = (blocks.back())->location.y;
 
     SDL_Point diffs [4] {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
@@ -19,6 +19,7 @@ void Tetromino::AddCandidates() {
 
         // Add the candidate if it is not overlapped with the blocks
         if (std::find_if(blocks.begin(), blocks.end(), compare(candidate)) == blocks.end()) {
+            //std::cout << candidate.x << "+" << candidate.y << std::endl;
             candidates.emplace_back(candidate);
         }
     }
@@ -32,24 +33,29 @@ void Tetromino::GenerateBlocks() {
     g = rand() % 256;
     b = rand() % 256;
 
-    std::vector<Block>{}.swap(blocks);
+    std::vector<Block*>{}.swap(blocks);
 
     while (blocks.size() < this->size) {
 
         if (blocks.size() == 0) {
             // Add initial block
-            blocks.emplace_back(Block(initLoc, r, g, b, a));
+            blocks.emplace_back(new Block(initLoc, r, g, b, a));
         } else {
             // Add a random block
             index = rand() % candidates.size();
-            blocks.emplace_back(Block(candidates[index], r, g, b, a));
+            blocks.emplace_back(new Block(std::move(candidates[index]), r, g, b, a));
             candidates.erase(candidates.begin()+index);
         }
 
         AddCandidates();
+        //std::cout<<candidates.size()<<std::endl;
     }
 
     std::vector<SDL_Point>{}.swap(candidates);
+
+/*     for (Block* b : blocks) {
+        std::cout << b->location.x << ":" << b->location.y << std::endl;
+    } */
 }
 
 void Tetromino::Move(Direction direction) {
@@ -59,8 +65,8 @@ void Tetromino::Move(Direction direction) {
 
         case Direction::Down:
             if (MovableToDown()) {
-                for (Block &b : blocks) {
-                    b.location.y += 1;
+                for (Block* &b : blocks) {
+                    b->location.y += 1;
                 }
             } else {
                 MoveToStack();
@@ -69,16 +75,16 @@ void Tetromino::Move(Direction direction) {
 
         case Direction::Right:
             if (MovableToRight()) {
-                for (Block &b : blocks) {
-                    b.location.x += 1;
+                for (Block* &b : blocks) {
+                    b->location.x += 1;
                 }
             }
             break;
 
         case Direction::Left:
             if (MovableToLeft()) {
-                for (Block &b : blocks) {
-                    b.location.x -= 1;
+                for (Block* &b : blocks) {
+                    b->location.x -= 1;
                 }
             }
             break;
@@ -86,13 +92,13 @@ void Tetromino::Move(Direction direction) {
 }
 
 bool Tetromino::MovableToLeft() {
-    for (Block &b : blocks) {
-        if (b.location.x == 0) {
+    for (Block* const &b : blocks) {
+        if (b->location.x == 0) {
             return false;
         }
 
-        for (Block &s : stack) {
-            if (((b.location.x - 1) == s.location.x) && (b.location.y == s.location.y)) {
+        for (Block* const &s : stack) {
+            if (((b->location.x - 1) == s->location.x) && (b->location.y == s->location.y)) {
                 return false;
             }
         }
@@ -102,13 +108,13 @@ bool Tetromino::MovableToLeft() {
 }
 
 bool Tetromino::MovableToRight() {
-    for (Block &b : blocks) {
-        if (b.location.x == (grid_width - 1)) {
+    for (Block* const &b : blocks) {
+        if (b->location.x == (grid_width - 1)) {
             return false;
         }
 
-        for (Block &s : stack) {
-            if (((b.location.x + 1) == s.location.x) && (b.location.y == s.location.y)) {
+        for (Block* const &s : stack) {
+            if (((b->location.x + 1) == s->location.x) && (b->location.y == s->location.y)) {
                 return false;
             }
         }
@@ -118,13 +124,13 @@ bool Tetromino::MovableToRight() {
 }
 
 bool Tetromino::MovableToDown() {
-    for (Block &b : blocks) {
-        if (b.location.y == (grid_height - 1)) {
+    for (Block* const &b : blocks) {
+        if (b->location.y == (grid_height - 1)) {
             return false;
         }
 
-        for (Block &s : stack) {
-            if (((b.location.y + 1) == s.location.y) && (b.location.x == s.location.x)) {
+        for (Block* const &s : stack) {
+            if (((b->location.y + 1) == s->location.y) && (b->location.x == s->location.x)) {
                 return false;
             }
         }
@@ -135,7 +141,7 @@ bool Tetromino::MovableToDown() {
 
 void Tetromino::MoveToStack() {
     // TODO
-    for (Block b : blocks) {
+    for (Block* b : blocks) {
         stack.emplace_back(std::move(b));
     }
 
