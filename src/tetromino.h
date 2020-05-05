@@ -2,6 +2,7 @@
 #define TETROMINO_H
 
 #include <vector>
+#include <map>
 #include <memory>
 #include "SDL.h"
 #include "block.h"
@@ -26,7 +27,7 @@ class Tetromino {
   int b {rand() % 256};
   int a {255};
   std::vector<Block*> blocks {};
-  std::vector<Block*> stack {};
+  std::map<int, std::vector<Block*>> stack {};
 
   void GenerateBlocks();
   void Move(Direction direction);

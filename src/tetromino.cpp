@@ -97,9 +97,11 @@ bool Tetromino::MovableToLeft() {
             return false;
         }
 
-        for (Block* const &s : stack) {
-            if (((b->location.x - 1) == s->location.x) && (b->location.y == s->location.y)) {
-                return false;
+        for (std::pair<int, std::vector<Block*>> line : stack) {
+            for (auto s : line.second) {
+                if (((b->location.x - 1) == s->location.x) && (b->location.y == s->location.y)) {
+                    return false;
+                }
             }
         }
     }
@@ -113,9 +115,11 @@ bool Tetromino::MovableToRight() {
             return false;
         }
 
-        for (Block* const &s : stack) {
-            if (((b->location.x + 1) == s->location.x) && (b->location.y == s->location.y)) {
-                return false;
+         for (std::pair<int, std::vector<Block*>> line : stack) {
+            for (auto s : line.second) {
+                if (((b->location.x + 1) == s->location.x) && (b->location.y == s->location.y)) {
+                    return false;
+                }
             }
         }
     }
@@ -129,9 +133,11 @@ bool Tetromino::MovableToDown() {
             return false;
         }
 
-        for (Block* const &s : stack) {
-            if (((b->location.y + 1) == s->location.y) && (b->location.x == s->location.x)) {
-                return false;
+        for (std::pair<int, std::vector<Block*>> line : stack) {
+            for (auto s : line.second) {
+                if (((b->location.y + 1) == s->location.y) && (b->location.x == s->location.x)) {
+                    return false;
+                }
             }
         }
     }
@@ -142,7 +148,13 @@ bool Tetromino::MovableToDown() {
 void Tetromino::MoveToStack() {
     // TODO
     for (Block* b : blocks) {
-        stack.emplace_back(std::move(b));
+        stack[b->location.y].emplace_back(std::move(b));
+    }
+
+    for (std::pair<int, std::vector<Block*>> line : stack) {
+        if (line.second.size() == grid_width) {
+            std::cout<<"yay"<<std::endl;
+        }
     }
 
     GenerateBlocks();
