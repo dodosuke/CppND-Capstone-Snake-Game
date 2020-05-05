@@ -8,17 +8,23 @@ void Controller::HandleInput(bool &running, Tetromino &tetromino) const {
     if (e.type == SDL_KEYDOWN) {
       switch (e.key.keysym.sym) {
         case SDLK_UP:
-          running = false;
-          break;
-
-        case SDLK_DOWN:
           tetromino.GenerateBlocks();
           break;
 
+        case SDLK_DOWN:
+          tetromino.Move(Tetromino::Direction::Down);
+          break;
+
         case SDLK_LEFT:
+          tetromino.Move(Tetromino::Direction::Left);
           break;
 
         case SDLK_RIGHT:
+          tetromino.Move(Tetromino::Direction::Right);
+          break;
+
+        case SDLK_a:
+          running = false;
           break;
       }
     }

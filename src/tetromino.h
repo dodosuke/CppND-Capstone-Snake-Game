@@ -18,22 +18,32 @@ struct compare {
 
 class Tetromino {
  public:
-  Tetromino(int grid_width, int grid_height);
+  enum class Direction {Up, Down, Left, Right};
 
+  Tetromino(int grid_width, int grid_height);
+  int r {rand() % 256};
+  int g {rand() % 256};
+  int b {rand() % 256};
+  int a {255};
   std::vector<Block> blocks {};
+  std::vector<Block> stack {};
+
   void GenerateBlocks();
+  void Move(Direction direction);
 
  private:
   int size{4};
   int grid_width;
   int grid_height;
-  int r {rand() % 256};
-  int g {rand() % 256};
-  int b {rand() % 256};
-  int a {255};
+
   std::vector<SDL_Point> candidates {};
 
   void AddCandidates();
+  void MoveToStack();
+
+  bool MovableToLeft();
+  bool MovableToRight();
+  bool MovableToDown();
 };
 
 #endif

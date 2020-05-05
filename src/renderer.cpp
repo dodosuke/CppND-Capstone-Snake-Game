@@ -48,38 +48,21 @@ void Renderer::Render(Tetromino const &tetromino) {
   SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
   SDL_RenderClear(sdl_renderer);
 
-  // Render Tetromino
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
+  // Render a falling block
+  SDL_SetRenderDrawColor(sdl_renderer, tetromino.r, tetromino.g, tetromino.b, tetromino.a);
   for (Block const &b : tetromino.blocks) {
     block.x = b.location.x * block.w;
     block.y = b.location.y * block.h;
     SDL_RenderFillRect(sdl_renderer, &block);
   }
-/*
-  // Render food
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
-  block.x = food.x * block.w;
-  block.y = food.y * block.h;
-  SDL_RenderFillRect(sdl_renderer, &block);
 
-  // Render snake's body
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-  for (SDL_Point const &point : snake.body) {
-    block.x = point.x * block.w;
-    block.y = point.y * block.h;
+  // Render Stack
+  for (Block const &b : tetromino.stack) {
+    SDL_SetRenderDrawColor(sdl_renderer, b.color[0], b.color[1], b.color[2], b.color[3]);
+    block.x = b.location.x * block.w;
+    block.y = b.location.y * block.h;
     SDL_RenderFillRect(sdl_renderer, &block);
   }
-
-  // Render snake's head
-  block.x = static_cast<int>(snake.head_x) * block.w;
-  block.y = static_cast<int>(snake.head_y) * block.h;
-  if (snake.alive) {
-    SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x7A, 0xCC, 0xFF);
-  } else {
-    SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
-  }
-  SDL_RenderFillRect(sdl_renderer, &block);
-*/
   // Update Screen
   SDL_RenderPresent(sdl_renderer);
 }
