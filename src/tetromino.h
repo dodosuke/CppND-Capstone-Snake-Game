@@ -61,7 +61,9 @@ class Tetromino {
   void AddCandidates();
   void MoveToStack();
   void DeleteLine(int index);
+  void Rotate();
 
+  bool Rotatable();
   bool MovableToLeft();
   bool MovableToRight();
   bool MovableToDown();

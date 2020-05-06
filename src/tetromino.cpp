@@ -84,6 +84,7 @@ void Tetromino::GenerateBlocks() {
 void Tetromino::Move(Direction direction) {
     switch (direction) {
         case Direction::Up:
+            Rotate();
             break;
 
         case Direction::Down:
@@ -141,6 +142,46 @@ bool Tetromino::MovableToRight() {
         for (auto const &l : stack) {
             for (auto const &s : l->blocks) {
                 if (((b->location.x + 1) == s->location.x) && (b->location.y == s->location.y))  {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
+void Tetromino::Rotate() {
+    if (!Rotatable()) {
+        return;
+    }
+
+    for (int i {1}; i < size; i++) {
+        int x = blocks[0]->location.x - blocks[i]->location.y + blocks[0]->location.y;
+        int y = blocks[0]->location.y + blocks[i]->location.x - blocks[0]->location.x;
+
+        blocks[i]->location.x = x;
+        blocks[i]->location.y = y;
+    }
+}
+
+bool Tetromino::Rotatable() {
+
+    for (int i {1}; i < size; i++) {
+        int x = blocks[0]->location.x - blocks[i]->location.y + blocks[0]->location.y;
+        int y = blocks[0]->location.y + blocks[i]->location.x - blocks[0]->location.x;
+
+        if ((x < 0) || (x >= grid_width)) {
+            return false;
+        }
+
+        if ((y < 0) || (y >= grid_height)) {
+            return false;
+        }
+
+        for (auto const &l : stack) {
+            for (auto const &s : l->blocks) {
+                if ((x == s->location.x) && (y == s->location.y)) {
                     return false;
                 }
             }
