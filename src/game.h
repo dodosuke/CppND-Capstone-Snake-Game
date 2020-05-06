@@ -24,9 +24,6 @@ class Game {
   std::uniform_int_distribution<int> random_h;
 
   int score{0};
-
-  void PlaceTetromino();
-  void Update();
 };
 
 #endif

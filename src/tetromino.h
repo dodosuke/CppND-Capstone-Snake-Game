@@ -45,6 +45,8 @@ class Tetromino {
   int g {rand() % 256};
   int b {rand() % 256};
   int a {255};
+
+  int score {0};
   std::vector<Block*> blocks {};
   std::vector<Line*> stack {};
 

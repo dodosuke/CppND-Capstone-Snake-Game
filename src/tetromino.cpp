@@ -210,7 +210,6 @@ bool Tetromino::MovableToDown() {
 }
 
 void Tetromino::MoveToStack() {
-    // TODO
     for (Block* b : blocks) {
         bool isNew {true};
         for (auto const &l : stack) {
@@ -227,7 +226,8 @@ void Tetromino::MoveToStack() {
 
     for (auto it = stack.begin(); it != stack.end();) {
         if ((*it)->blocks.size() == grid_width) {
-            std::cout<<"yay"<<std::endl;
+            score += 1;
+            //std::cout<<"yay"<<std::endl;
             DeleteLine((*it)->index);
         } else {
             it++;
