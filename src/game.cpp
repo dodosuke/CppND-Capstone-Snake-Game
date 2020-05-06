@@ -23,6 +23,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, tetromino);
+    running = tetromino.running;
     renderer.Render(tetromino);
 
     frame_end = SDL_GetTicks();

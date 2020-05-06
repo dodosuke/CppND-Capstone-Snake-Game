@@ -41,11 +41,24 @@ void Tetromino::AddCandidates() {
         SDL_Point candidate {SDL_Point{x+diff.x, y+diff.y}};
 
         // Add the candidate if it is not overlapped with the blocks
-        if (std::find_if(blocks.begin(), blocks.end(), compare(candidate)) == blocks.end()) {
-            //std::cout << candidate.x << "+" << candidate.y << std::endl;
+        if (IsCandidateAvailable(candidate)) {
             candidates.emplace_back(candidate);
         }
     }
+}
+
+bool Tetromino::IsCandidateAvailable(SDL_Point &point) {
+    if (std::find_if(blocks.begin(), blocks.end(), compare(point)) != blocks.end()) {
+        return false;
+    }
+
+    for (auto const &l : stack) {
+        if (std::find_if(l->blocks.begin(), l->blocks.end(), compare(point)) != l->blocks.end()) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void Tetromino::GenerateBlocks() {
@@ -71,7 +84,11 @@ void Tetromino::GenerateBlocks() {
         }
 
         AddCandidates();
-        //std::cout<<candidates.size()<<std::endl;
+
+        if (candidates.size() == 0) {
+            running = false;
+            break;
+        }
     }
 
     std::vector<SDL_Point>{}.swap(candidates);

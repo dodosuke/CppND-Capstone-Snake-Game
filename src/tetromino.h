@@ -47,6 +47,7 @@ class Tetromino {
   int a {255};
 
   int score {0};
+  bool running {true};
   std::vector<Block*> blocks {};
   std::vector<Line*> stack {};
 
@@ -65,6 +66,7 @@ class Tetromino {
   void DeleteLine(int index);
   void Rotate();
 
+  bool IsCandidateAvailable(SDL_Point &point);
   bool Rotatable();
   bool MovableToLeft();
   bool MovableToRight();
